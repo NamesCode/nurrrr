@@ -15,6 +15,7 @@ in
       # Config
       logLocation = lib.mkOption {
         default = "/var/log/ddnsh.log";
+        example = "/var/log/ddnsh.log";
         description = "Filepath for logs.";
         type = lib.types.str;
       };
@@ -28,18 +29,24 @@ in
         type = lib.types.str;
       };
 
-      apiKey = lib.mkOption {
+      apiKeyFile = lib.mkOption {
+        example = "/run/secrets/ddnsh-cf-apikey";
         description = ''
+          WARN: THIS IS A SECRET FILE AND MUST BE KEPT AS MUCH. 
+          Ensure that ONLY the user defined (default is `ddnsh`) can read this file.
+          If this gets leaked ANYONE can edit you're DNS entries.
+
           The api key to use.
           Select the `Edit Zone` template from [here](https://dash.cloudflare.com/profile/api-tokens) and fill in the options.
           This must have edit permissions.
         '';
-        type = lib.types.str;
+        type = lib.types.path;
       };
 
       # Systemd
       delay = lib.mkOption {
         default = "5m";
+        example = "5m";
         description = ''
           Time taken between runs.
           Must be in the format described in
@@ -61,13 +68,14 @@ in
       };
 
       user = lib.mkOption {
-        type = lib.types.str;
+        default = "ddnsh";
+        example = "ddnsh";
         description = ''
           The user {command}`ddnsh` is run as.
           User or group needs write permission
           for the specified {option}`path`.
         '';
-        default = "ddnsh";
+        type = lib.types.str;
       };
     };
   };
@@ -87,10 +95,9 @@ in
     };
 
     systemd.services."ddnsh" = {
-      # WARN: Yes, I am aware this is EXTREMELY dangerous as it enters the Nix Store as world readable
       script = ''
         DDNSH_CF_ZONEID="${cfg.zoneId}" \
-        DDNSH_CF_APIKEY="${cfg.apiKey}" \
+        DDNSH_CF_APIKEY="$(cat ${cfg.apiKeyFile}$)" \
         ddnsh >> ${cfg.logLocation}
       '';
       serviceConfig = {
