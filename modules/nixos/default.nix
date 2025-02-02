@@ -1,0 +1,3 @@
+{
+  imports = [ ./ddnsh.nix ];
+}
