@@ -2,7 +2,7 @@
   lib,
   config,
   nurrrr-pkgs,
-  pkgs,
+  ...
 }:
 let
   cfg = config.services.ddnsh;
@@ -73,7 +73,8 @@ in
   };
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [
-      nurrrr-pkgs.ddnsh    ];
+      nurrrr-pkgs.ddnsh
+    ];
 
     systemd.timers."ddnsh" = {
       wantedBy = [ "timers.target" ];

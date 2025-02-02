@@ -1,5 +1,22 @@
 { nurrrr }:
-{ pkgs }:
 {
-  nixos = import ./nixos { nurrrr-pkgs = nurrrr.legacyPackages.${pkgs.stdenv.hostPlatform.system}; };
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+let
+  niceImport =
+    file:
+    (import file {
+      inherit
+        lib
+        config
+        pkgs
+        nurrrr
+        ;
+    });
+in
+{
+  nixos = niceImport ./nixos;
 }
