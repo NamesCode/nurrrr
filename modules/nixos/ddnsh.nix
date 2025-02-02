@@ -86,6 +86,7 @@ in
     };
 
     systemd.services."ddnsh" = {
+      # WARN: Yes, I am aware this is EXTREMELY dangerous as it enters the Nix Store as world readable
       script = ''
         DDNSH_CF_ZONEID="${cfg.zoneId}" \
         DDNSH_CF_APIKEY="${cfg.apiKey}" \
