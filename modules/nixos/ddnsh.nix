@@ -80,10 +80,6 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [
-      nurrrr-pkgs.ddnsh
-    ];
-
     systemd.timers."ddnsh" = {
       wantedBy = [ "timers.target" ];
       timerConfig = {
@@ -98,7 +94,7 @@ in
       script = ''
         DDNSH_CF_ZONEID="${cfg.zoneId}" \
         DDNSH_CF_APIKEY="$(cat ${cfg.apiKeyFile}$)" \
-        ddnsh >> ${cfg.logLocation}
+        ${nurrrr-pkgs.ddnsh}/bin/ddnsh >> ${cfg.logLocation}
       '';
       serviceConfig = {
         Type = "oneshot";
