@@ -93,7 +93,7 @@ in
     systemd.services."ddnsh" = {
       script = ''
         DDNSH_CF_ZONEID="${cfg.zoneId}" \
-        DDNSH_CF_APIKEY="$(cat ${cfg.apiKeyFile}$)" \
+        DDNSH_CF_APIKEY="$(cat ${cfg.apiKeyFile})" \
         ${nurrrr-pkgs.ddnsh}/bin/ddnsh >> ${cfg.logLocation}
       '';
       serviceConfig = {
